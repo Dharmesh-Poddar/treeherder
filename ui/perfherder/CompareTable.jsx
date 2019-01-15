@@ -6,14 +6,26 @@ import PropTypes from 'prop-types';
 import perf from '../js/perf';
 
 export default class CompareTable extends React.Component {
+  getCompareClass = (data, type) => {
+    if (data.isEmpty) return 'subtest-empty';
+    if (type === 'row' && data.highlightedTest) return 'active subtest-highlighted';
+    if (type === 'bar' && data.isRegression) return 'bar-regression';
+    if (type === 'bar' && data.isImprovement) return 'bar-improvement';
+    if (type === 'bar' || type === 'row') return '';
+    return data.className;
+  }
   render() {
-    const { titles, compareResults } = this.props;
-    console.log(compareResults, titles);
+    const { compareResults } = this.props;
+    // console.log(compareResults)
+    // const data = compareResults[0];
+    // const testName = Object.keys(data);
+    // console.log(data, testName);
     return (
+      Object.entries(compareResults).map(([testName, data]) =>
       <Table sz="small">
         <thead>
           <tr>
-            <th className="test-title"><span className="word-wrap break-word">{titles[compareResults.testName]}</span></th>
+            <th className="test-title"><span className="word-wrap break-word">{testName}</span></th>
             <th style={{ width: "140px" }}>Base</th>
             {/* empty for less than/greater than data */}
             <th style={{ width: "30px" }} />
@@ -28,6 +40,23 @@ export default class CompareTable extends React.Component {
           </tr>
         </thead>
         <tbody>
+        {data.map(platform =>
+        <tr className={() => this.getCompareClass(platform, 'row')}>
+          <th className="test-title">{platform.name}
+            {platform.links &&
+            platform.links.map(link => <a className="result-links" href={link.href}>{` ${link.title}`}</a>)}
+          </th>
+        </tr>)}
+        {/* <tr ng-class="getCompareClasses(compareResult, 'row')" ng-repeat="compareResult in compareResults.results | orderBy: 'name' track by $index">
+          <td class="test-title">{{compareResult.name}}&nbsp;&nbsp;
+            <span class="result-links" ng-if="compareResult.links.length > 0">
+              <span ng-repeat="link in compareResult.links track by link.title">
+                <a ng-href="{{link.href}}">{{link.title}}</a>
+                <span ng-if="!$last"> · </span>
+              </span>
+            </span>
+          </td>
+        </tr> */}
           {/* <tr>
             <th scope="row">1</th>
             <td>Mark</td>
@@ -47,7 +76,7 @@ export default class CompareTable extends React.Component {
             <td>@twitter</td>
           </tr> */}
         </tbody>
-      </Table>
+      </Table>)
     );
   }
 }
@@ -63,10 +92,9 @@ CompareTable.propTypes = {
   ).isRequired,
   filterOptions: PropTypes.shape({}).isRequired,
   filterByFramework: PropTypes.number.isRequired,
-  $rootScope: PropTypes.object.isRequired,
 };
 
 perf.component(
   'compareTable',
-  react2angular(CompareTable, ['compareResults', 'titles', 'testList', 'frameworks', 'filterOptions', 'filterByFramework'], ['$rootScope']),
+  react2angular(CompareTable, ['compareResults', 'titles', 'testList', 'frameworks', 'filterOptions', 'filterByFramework'], []),
 );
