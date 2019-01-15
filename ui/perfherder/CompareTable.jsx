@@ -7,11 +7,13 @@ import perf from '../js/perf';
 
 export default class CompareTable extends React.Component {
   render() {
+    const { titles, compareResults } = this.props;
+    console.log(compareResults, titles);
     return (
-      <Table>
+      <Table sz="small">
         <thead>
           <tr>
-            {/* <th className="test-title"><span className="word-wrap break-word">{{$ctrl.titles[compareResults.testName]}}</span></th> */}
+            <th className="test-title"><span className="word-wrap break-word">{titles[compareResults.testName]}</span></th>
             <th style={{ width: "140px" }}>Base</th>
             {/* empty for less than/greater than data */}
             <th style={{ width: "30px" }} />
@@ -51,10 +53,20 @@ export default class CompareTable extends React.Component {
 }
 
 CompareTable.propTypes = {
-  $state: PropTypes.shape({}).isRequired,
+  titles: PropTypes.shape({}).isRequired,
+  compareResults: PropTypes.shape({}).isRequired,
+  testList: PropTypes.arrayOf(
+    PropTypes.string,
+  ).isRequired,
+  frameworks: PropTypes.arrayOf(
+    PropTypes.shape({}),
+  ).isRequired,
+  filterOptions: PropTypes.shape({}).isRequired,
+  filterByFramework: PropTypes.number.isRequired,
+  $rootScope: PropTypes.object.isRequired,
 };
 
 perf.component(
   'compareTable',
-  react2angular(CompareTable, [], ['$state']),
+  react2angular(CompareTable, ['compareResults', 'titles', 'testList', 'frameworks', 'filterOptions', 'filterByFramework'], ['$rootScope']),
 );
