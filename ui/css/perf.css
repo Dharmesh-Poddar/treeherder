@@ -302,17 +302,17 @@ ph-compare-table hr {
     text-align: center;
     cursor: default;
 }
-
-.compare-table .test-title {
+/* remove */
+/* .compare-table .test-title {
     text-align: left;
-}
+} */
 
 .compare-table .subtest-header > th {
     color: transparent;
     transition: color 150ms ease-in-out;
 }
 
-.compare-table:first-child .subtest-header > th,
+.compare-table .subtest-header > th:first-child,
 .compare-table:hover .subtest-header > th,
 .compare-table .subtest-header > th.test-title {
     color: #333;
@@ -352,9 +352,9 @@ ph-compare-table hr {
     text-align: right;
 }
 
-.compare-table .test-warning {
+/* .compare-table .test-warning {
     text-align: left;
-}
+} */
 
 td.compare-improvement {
   background-image: linear-gradient(to bottom, #80BB2E, #547D1C);

@@ -2,11 +2,12 @@ import React from 'react';
 import { Table } from 'reactstrap';
 import { react2angular } from 'react2angular/index.es2015';
 import PropTypes from 'prop-types';
+import '../css/perf.css';
 
 import perf from '../js/perf';
 
 export default class CompareTable extends React.Component {
-  getCompareClass = (data, type) => {
+  getCompareClass = (data, type) => {  
     if (data.isEmpty) return 'subtest-empty';
     if (type === 'row' && data.highlightedTest) return 'active subtest-highlighted';
     if (type === 'bar' && data.isRegression) return 'bar-regression';
@@ -16,16 +17,12 @@ export default class CompareTable extends React.Component {
   }
   render() {
     const { compareResults } = this.props;
-    // console.log(compareResults)
-    // const data = compareResults[0];
-    // const testName = Object.keys(data);
-    // console.log(data, testName);
     return (
       Object.entries(compareResults).map(([testName, data]) =>
-      <Table sz="small">
+      <Table sz="small" className="compare-table" key={testName}>
         <thead>
-          <tr>
-            <th className="test-title"><span className="word-wrap break-word">{testName}</span></th>
+          <tr className="subtest-header">
+            <th className="text-left"><span className="word-wrap break-word">{testName}</span></th>
             <th style={{ width: "140px" }}>Base</th>
             {/* empty for less than/greater than data */}
             <th style={{ width: "30px" }} />
@@ -36,15 +33,17 @@ export default class CompareTable extends React.Component {
             <th style={{ width: "100px" }}>Confidence</th>
             <th className="num-runs" style={{ width: "80px" }}># Runs</th>
             {/* empty for warning message, if not enough data */}
-            <th className="test-warning" style={{ width: "30px" }} />
+            <th className="text-left" style={{ width: "30px" }} />
           </tr>
         </thead>
         <tbody>
-        {data.map(platform =>
-        <tr className={() => this.getCompareClass(platform, 'row')}>
-          <th className="test-title">{platform.name}
+        {data.map((platform, index) =>
+        <tr key={index} className={this.getCompareClass(platform, 'row')}>
+          <th className="text-left font-weight-normal">{platform.name}
             {platform.links &&
-            platform.links.map(link => <a className="result-links" href={link.href}>{` ${link.title}`}</a>)}
+            <span className="result-links">
+              {platform.links.map(link => <span key={link.title}><a href={link.href}>{` ${link.title}`}</a></span>)}
+            </span>}
           </th>
         </tr>)}
         {/* <tr ng-class="getCompareClasses(compareResult, 'row')" ng-repeat="compareResult in compareResults.results | orderBy: 'name' track by $index">
@@ -62,18 +61,6 @@ export default class CompareTable extends React.Component {
             <td>Mark</td>
             <td>Otto</td>
             <td>@mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
           </tr> */}
         </tbody>
       </Table>)
